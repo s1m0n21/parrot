@@ -1,8 +1,9 @@
-# 📝 go-log
+# 🦜 Parrot
+A logging tool based on zap
 
  ## Installation
 ```shell
-go get github.com/s1m0n21/go-log
+go get github.com/s1m0n21/parrot
 ```
 
 ## Quick start
@@ -10,22 +11,22 @@ go get github.com/s1m0n21/go-log
 package main
 
 import (
-	logger "github.com/s1m0n21/go-log"
+	parrot "github.com/s1m0n21/parrot"
 )
 
 func main() {
 	// log to console
-	log := logger.New("a")
+	log := parrot.New("a")
 	log.Infof("test")
 	
 	// set log level dynamic
-	_ = logger.SetLevel("*", "error")
+	_ = parrot.SetLevel("*", "error")
 	
 	// log to file
 	// log file max size: 100MiB
 	// log file max backups: 5
 	// log file max age: 7days
-	log = logger.New("b", logger.OptSetLogFile("b.log", 100, 5, 7))
+	log = parrot.New("b", parrot.OptSetLogFile("b.log", 100, 5, 7))
 	log.Infof("test")
 }
 ```
