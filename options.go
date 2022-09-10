@@ -1,8 +1,9 @@
-package log
+package parrot
 
 import (
-	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
+
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 type Option func(*config)
@@ -27,7 +28,7 @@ func OptSetLevel(lvl string) Option {
 
 func OptLevelFromEnv() Option {
 	return func(c *config) {
-		if lvl, set := os.LookupEnv("GO_LOG_LEVEL"); set {
+		if lvl, set := os.LookupEnv("PARROT_LEVEL"); set {
 			c.lvl = getLevel(lvl)
 		}
 	}

@@ -1,4 +1,4 @@
-module github.com/s1m0n21/go-log
+module github.com/s1m0n21/parrot
 
 go 1.15
 
