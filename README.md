@@ -10,16 +10,14 @@ go get github.com/s1m0n21/parrot
 ```go
 package main
 
-import (
-	parrot "github.com/s1m0n21/parrot"
-)
+import "github.com/s1m0n21/parrot"
 
 func main() {
 	// log to console
 	log := parrot.New("a")
 	log.Infof("test")
 	
-	// set log level dynamic
+	// change log level
 	_ = parrot.SetLevel("*", "error")
 	
 	// log to file
