@@ -10,16 +10,20 @@ import (
 )
 
 type config struct {
-	w   io.Writer
-	lvl zapcore.Level
+	w      io.Writer
+	lvl    zapcore.Level
+	caller bool
+	color  bool
 }
 
 var ErrLoggerNotExist = xerrors.New("logger does not exist")
 
-func defaultConf() config {
-	return config{
-		w:   os.Stdout,
-		lvl: zapcore.ErrorLevel,
+func defaultConf() *config {
+	return &config{
+		w:      os.Stdout,
+		lvl:    zapcore.ErrorLevel,
+		caller: true,
+		color:  true,
 	}
 }
 
@@ -27,7 +31,7 @@ func New(system string, opts ...Option) *zap.SugaredLogger {
 	conf := defaultConf()
 
 	for _, o := range opts {
-		o(&conf)
+		o(conf)
 	}
 
 	if len(system) == 0 {
@@ -41,7 +45,7 @@ func New(system string, opts ...Option) *zap.SugaredLogger {
 	}
 
 	core := zapcore.NewCore(
-		zapcore.NewConsoleEncoder(newEncoderConfig(false)),
+		zapcore.NewConsoleEncoder(newEncoderConfig(conf)),
 		zapcore.NewMultiWriteSyncer(zapcore.AddSync(conf.w)),
 		levels[system],
 	)
@@ -51,7 +55,7 @@ func New(system string, opts ...Option) *zap.SugaredLogger {
 	return logger
 }
 
-func newEncoderConfig(caller bool) zapcore.EncoderConfig {
+func newEncoderConfig(conf *config) zapcore.EncoderConfig {
 	enc := zapcore.EncoderConfig{
 		TimeKey:        "time",
 		LevelKey:       "level",
@@ -59,14 +63,18 @@ func newEncoderConfig(caller bool) zapcore.EncoderConfig {
 		MessageKey:     "msg",
 		StacktraceKey:  "stack",
 		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeLevel:    zapcore.CapitalColorLevelEncoder,
+		EncodeLevel:    zapcore.CapitalLevelEncoder,
 		EncodeCaller:   zapcore.ShortCallerEncoder,
 		EncodeTime:     zapcore.ISO8601TimeEncoder,
 		EncodeDuration: zapcore.SecondsDurationEncoder,
 	}
 
-	if caller {
+	if conf.caller {
 		enc.CallerKey = "caller"
+	}
+
+	if conf.color {
+		enc.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	}
 
 	return enc

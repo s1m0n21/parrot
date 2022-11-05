@@ -33,3 +33,15 @@ func OptLevelFromEnv() Option {
 		}
 	}
 }
+
+func OptWithoutCall() Option {
+	return func(c *config) {
+		c.caller = false
+	}
+}
+
+func OptWithoutColor() Option {
+	return func(c *config) {
+		c.color = false
+	}
+}
